@@ -5,6 +5,11 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Damagable))]
 public class ShipCore : MonoBehaviour {
+    public Transform LeftThrustPosition;
+    public Transform RightThrustPosition;
+
+    public float ThrustFactor = 5.0f;
+
     public Action<Connectable> OnPartConnected = delegate { };
 
     private List<Connectable> connectedParts = new List<Connectable>();
@@ -27,6 +32,37 @@ public class ShipCore : MonoBehaviour {
 
     private void Start() {
         rb2D.AddForceAtPosition(Vector2.one * 15f, Vector2.left);
+    }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ThrustActive(LeftThrustPosition);
+            ThrustActivating(LeftThrustPosition);
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            ThrustActive(LeftThrustPosition);
+        }
+        else if (Input.GetKeyUp(KeyCode.Q))
+        {
+            ThrustDeactivated(LeftThrustPosition);
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ThrustActive(RightThrustPosition);
+            ThrustActivating(RightThrustPosition);
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            ThrustActive(RightThrustPosition);
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+        {
+            ThrustDeactivated(RightThrustPosition);
+        }
     }
 
     public void RegisterConnectable(Connectable connectable) {
@@ -72,5 +108,20 @@ public class ShipCore : MonoBehaviour {
             KeyCode.Y,
             KeyCode.Z
         };
+    }
+
+    private void ThrustActive(Transform thrustPosition)
+    {
+        this.Rb2D.AddForceAtPosition(transform.up * ThrustFactor, thrustPosition.position);
+    }
+
+    private void ThrustActivating(Transform thrustPosition)
+    {
+        //add thrust fire sprite
+    }
+
+    private void ThrustDeactivated(Transform thrustPosition)
+    {
+        // rm thrust fire sprite
     }
 }
