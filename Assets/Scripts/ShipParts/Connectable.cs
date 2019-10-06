@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Damagable))]
-public class Connectable : MonoBehaviour {
+public class Connectable : ObjectBase {
     public virtual KeyCode ActivationKey { get; set; }
 
     private Connection[] connections;
@@ -12,6 +12,11 @@ public class Connectable : MonoBehaviour {
     protected ShipCore connectedShip = null;
     protected int factionId;
     protected Rigidbody2D rb2D;
+
+    protected override void Start()
+    {
+        base.Start();
+    }
 
     protected virtual void Awake() {
         connections = GetComponentsInChildren<Connection>();
@@ -33,6 +38,11 @@ public class Connectable : MonoBehaviour {
             } else if (Input.GetKeyUp(ActivationKey)) {
                 OnPartDeactivated();
             }
+        }
+        else
+        {
+            //If we are not connected treat the object as a base obj
+            base.Update();
         }
     }
 

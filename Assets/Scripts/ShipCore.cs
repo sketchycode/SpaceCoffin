@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Damagable))]
-public class ShipCore : MonoBehaviour {
+public class ShipCore : ObjectBase
+{
     public Transform LeftThrustPosition;
     public Transform RightThrustPosition;
 
@@ -18,10 +19,6 @@ public class ShipCore : MonoBehaviour {
     private Damagable damagable;
     private Connection[] connections;
 
-    private Renderer[] renderers;
-    private bool isWrappingX = false;
-    private bool isWrappingY = false;
-
     public int FactionId { get; set; }
     public Rigidbody2D Rb2D => rb2D;
 
@@ -34,17 +31,16 @@ public class ShipCore : MonoBehaviour {
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
-        renderers = GetComponentsInChildren<Renderer>();
+        base.Start();
         rb2D.AddForceAtPosition(Vector2.one * 15f, Vector2.left);
     }
 
-    public void Update()
+    protected virtual void Update()
     {
-        ScreenWrap();
+        base.Update();
         CheckBaseThrusters();
-        
     }
 
     private void CheckBaseThrusters()
@@ -76,54 +72,6 @@ public class ShipCore : MonoBehaviour {
         {
             ThrustDeactivated(RightThrustPosition);
         }
-    }
-
-    private bool CheckRenderers()
-    {
-        foreach(Renderer renderer in renderers)
-        {
-            if (renderer.isVisible)
-                return true;
-        }
-
-        return false;
-    }
-
-    private void ScreenWrap()
-    {
-        var isVisible = CheckRenderers();
-
-        if (isVisible)
-        {
-            isWrappingX = false;
-            isWrappingY = false;
-            return;
-        }
-
-        if (isWrappingX && isWrappingY)
-        {
-            return;
-        }
-
-        var cam = Camera.main;
-        var viewportPosition = cam.WorldToViewportPoint(transform.position);
-        var newPosition = transform.position;
-
-        if (!isWrappingX && (viewportPosition.x > 1 || viewportPosition.x < 0))
-        {
-            newPosition.x = -newPosition.x;
-
-            isWrappingX = true;
-        }
-
-        if (!isWrappingY && (viewportPosition.y > 1 || viewportPosition.y < 0))
-        {
-            newPosition.y = -newPosition.y;
-
-            isWrappingY = true;
-        }
-
-        transform.position = newPosition;
     }
 
     public void RegisterConnectable(Connectable connectable) {
