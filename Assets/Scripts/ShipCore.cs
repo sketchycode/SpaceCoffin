@@ -31,13 +31,13 @@ public class ShipCore : ObjectBase
         }
     }
 
-    protected override void Start()
+    protected void Start()
     {
         base.Start();
         rb2D.AddForceAtPosition(Vector2.one * 15f, Vector2.left);
     }
 
-    protected virtual void Update()
+    protected override void Update()
     {
         base.Update();
         CheckBaseThrusters();

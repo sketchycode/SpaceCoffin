@@ -13,10 +13,6 @@ public class Connectable : ObjectBase {
     protected int factionId;
     protected Rigidbody2D rb2D;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
 
     protected virtual void Awake() {
         connections = GetComponentsInChildren<Connection>();
@@ -27,7 +23,8 @@ public class Connectable : ObjectBase {
         rb2D = GetComponent<Rigidbody2D>();
     }
 
-    protected virtual void Update() {
+    protected override void Update() {
+        
         if (connectedShip != null) {
             if (Input.GetKeyDown(ActivationKey)) {
                 OnPartActivated();
@@ -61,6 +58,7 @@ public class Connectable : ObjectBase {
     }
 
     public void DisconnectFromShip() {
+        //Need to remove assigned active key
         OnShipDisconnected();
     }
 
@@ -71,6 +69,6 @@ public class Connectable : ObjectBase {
     protected virtual void OnPartDeactivated() { }
 
     public void HandlePartDestroyed() {
-
+        //Destroy object and invoke discconection from ship if the node no longer connects to base ship.
     }
 }

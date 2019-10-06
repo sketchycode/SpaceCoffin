@@ -11,6 +11,7 @@ public abstract class ObjectBase : MonoBehaviour
     // Use this for initialization
     protected virtual void Start()
     {
+        Debug.Log("start called for obj base");
         renderers = GetComponentsInChildren<Renderer>();
     }
 
