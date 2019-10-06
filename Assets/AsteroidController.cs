@@ -43,11 +43,24 @@ public class AsteroidController : MonoBehaviour
             float randomPosY = Random.Range(0.0f, 1.0f) * _camera.pixelHeight;
             position = new Vector3(randomPosX, randomPosY, 0.0f);
 
+            RaycastHit hit;
+
+            
             Vector3 spawnWorldPoint = _camera.ScreenToWorldPoint((Vector3)position);
 
             spawnWorldPoint.z = 0;
+
+            if (!Physics.SphereCast(spawnWorldPoint, 1.0f, transform.forward, out hit))
+            {
+                asteroidGameObject = Instantiate(AsteroidPrefab, spawnWorldPoint, new Quaternion(0, 0, 0, 0));
+            }
+            else
+            {
+                Debug.Log($"Asteroid would collide with {hit.collider.name}");
+                return;
+            }
+
             
-            asteroidGameObject = Instantiate(AsteroidPrefab, spawnWorldPoint, new Quaternion(0, 0, 0, 0));
         }
 
         Asteroid asteroid = asteroidGameObject.GetComponent<Asteroid>();
