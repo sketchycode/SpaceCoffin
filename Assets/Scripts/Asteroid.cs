@@ -35,9 +35,15 @@ public class Asteroid : ObjectBase
     {
         Debug.Log(collision.collider.name);
         Damagable damagedObject = collision.collider.GetComponent<Damagable>();
+        Bullet bullet = collision.collider.GetComponent<Bullet>();
+
         if (damagedObject != null)
         {
             damagedObject.TakeDamage(1);
+            OnAsteroidHit();
+        }
+        else if(bullet != null)
+        {
             OnAsteroidHit();
         }
     }
