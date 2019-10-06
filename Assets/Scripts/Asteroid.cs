@@ -10,6 +10,9 @@ public class Asteroid : ObjectBase
 
     public float AsteroidTier = 5;
 
+    public delegate void AsteroidDestroy(Asteroid asteroid);
+    public event AsteroidDestroy DestroyEvent;
+
     Collider2D collider;
     // Start is called before the first frame update
     void Start()
@@ -32,14 +35,17 @@ public class Asteroid : ObjectBase
     {
         Debug.Log(collision.collider.name);
         Damagable damagedObject = collision.collider.GetComponent<Damagable>();
-        damagedObject.TakeDamage(1);
-        OnAsteroidHit();
+        if (damagedObject != null)
+        {
+            damagedObject.TakeDamage(1);
+            OnAsteroidHit();
+        }
     }
 
     private void OnAsteroidHit()
     {
+        DestroyEvent(this);
         Destroy(this.gameObject);
     }
-
 
 }
