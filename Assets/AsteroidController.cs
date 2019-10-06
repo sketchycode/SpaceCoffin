@@ -30,12 +30,25 @@ public class AsteroidController : MonoBehaviour
             _timeSinceLastSpawn += Time.deltaTime;
     }
 
-    private void SpawnAsteroid(float asteroidTier = 0)
+    private void SpawnAsteroid(float asteroidTier = 0, Vector3? position = null)
     {
-        Vector3 spawnPoint = new Vector3(0.25f, 0.25f, 0.0f);
-        Vector3 spawnWorldPoint = _camera.WorldToScreenPoint(spawnPoint);
+        GameObject asteroidGameObject;
 
-        GameObject asteroidGameObject = Instantiate(AsteroidPrefab, spawnPoint, new Quaternion(0,0,0,0));
+        //handle position of asteroid
+        if (position != null)
+            asteroidGameObject = Instantiate(AsteroidPrefab, (Vector3)position, new Quaternion(0, 0, 0, 0));
+        else
+        {
+            float randomPosX = Random.Range(0.0f, 1.0f) * _camera.pixelWidth;
+            float randomPosY = Random.Range(0.0f, 1.0f) * _camera.pixelHeight;
+            position = new Vector3(randomPosX, randomPosY, 0.0f);
+
+            Vector3 spawnWorldPoint = _camera.ScreenToWorldPoint((Vector3)position);
+
+            spawnWorldPoint.z = 0;
+            
+            asteroidGameObject = Instantiate(AsteroidPrefab, spawnWorldPoint, new Quaternion(0, 0, 0, 0));
+        }
 
         Asteroid asteroid = asteroidGameObject.GetComponent<Asteroid>();
 
@@ -51,7 +64,8 @@ public class AsteroidController : MonoBehaviour
     {
         if (asteroid.AsteroidTier != 1)
         {
-            SpawnAsteroid(asteroid.AsteroidTier - 1f);
+            SpawnAsteroid(asteroid.AsteroidTier - 1f, asteroid.gameObject.transform.position);
+            SpawnAsteroid(asteroid.AsteroidTier - 1f, asteroid.gameObject.transform.position);
         }
     }
 }
