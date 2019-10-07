@@ -8,11 +8,27 @@ public class Damagable : MonoBehaviour {
 
     public UnityEvent OnPartDestroyed;
     public int FactionId { get; set; }
+    public bool IsDestroyed { get; private set; } = false;
+
+    private float currentHealth;
+    private ParticleSystem[] explosionEffects;
+
+    private void Awake() {
+        explosionEffects = GetComponentsInChildren<ParticleSystem>();
+        currentHealth = maxHealth;
+    }
 
     public void TakeDamage(float dmgAmt) {
-        maxHealth -= dmgAmt;
+        Debug.Log($"{name} took {dmgAmt} damage");
+        currentHealth -= dmgAmt;
 
-        if (maxHealth <= 0) {
+        if (currentHealth <= 0 && !IsDestroyed) {
+            foreach (var effect in explosionEffects) {
+                effect.transform.SetParent(null, true);
+                effect.Play();
+            }
+            IsDestroyed = true;
+            Debug.Log($"{name} destroyed");
             OnPartDestroyed.Invoke();
         }
     }

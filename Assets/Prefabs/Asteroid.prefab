@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 5564444176944564212}
   - component: {fileID: 4083238930895978343}
   - component: {fileID: 6907151988505724721}
-  - component: {fileID: 3666742211042062233}
   - component: {fileID: 2578188250422516525}
-  - component: {fileID: 2578188250422516690}
+  - component: {fileID: 5791426017778444929}
   m_Layer: 0
   m_Name: Asteroid
   m_TagString: Untagged
@@ -104,31 +103,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!68 &3666742211042062233
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2578188250422516524}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.18375054, y: 0.50036323}
-  - {x: 0.19239855, y: 0.50938296}
-  - {x: 0.50230837, y: 0.18564987}
-  - {x: 0.5046418, y: -0.37059927}
-  - {x: 0.37313938, y: -0.49844885}
-  - {x: -0.3683486, y: -0.5020437}
-  - {x: -0.4992218, y: -0.3643813}
-  - {x: -0.49651003, y: 0.18984342}
-  - {x: -0.1812849, y: 0.5027249}
 --- !u!114 &2578188250422516525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e0a294df9b76845b007426f092fd6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!60 &2578188250422516690
+  AsteroidTier: 5
+--- !u!60 &5791426017778444929
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,11 +141,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.18435717, y: 0.5064087}
-      - {x: -0.50320435, y: 0.17312622}
-      - {x: -0.50380373, y: -0.36452627}
-      - {x: -0.37182617, y: -0.5}
-      - {x: 0.37182617, y: -0.49679565}
-      - {x: 0.49212003, y: -0.36833143}
-      - {x: 0.5001259, y: 0.20272422}
-      - {x: 0.18276978, y: 0.49679565}
+    - - {x: 0.16041493, y: 0.43281102}
+      - {x: -0.18185472, y: 0.43281126}
+      - {x: -0.36562204, y: 0.2667513}
+      - {x: -0.29203415, y: 0.04774952}
+      - {x: -0.2875085, y: -0.19783163}
+      - {x: -0.38055325, y: -0.37031126}
+      - {x: -0.19487333, y: -0.44027638}
+      - {x: 0.15668201, y: -0.43654394}
+      - {x: 0.30685496, y: -0.30130172}
+      - {x: 0.2993896, y: 0.19774199}

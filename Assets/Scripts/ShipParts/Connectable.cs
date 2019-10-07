@@ -4,6 +4,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Damagable))]
 public class Connectable : ObjectBase {
+    [SerializeField] private float chainDestroyDelay = 0.3f;
+
     public virtual KeyCode ActivationKey { get; set; }
 
     private Connection[] connections;
@@ -20,11 +22,12 @@ public class Connectable : ObjectBase {
             connection.gameObject.SetActive(false);
         }
         damagable = GetComponent<Damagable>();
+        damagable.OnPartDestroyed.AddListener(HandlePartDestroyed);
         rb2D = GetComponent<Rigidbody2D>();
     }
 
     protected override void Update() {
-        
+
         if (connectedShip != null) {
             if (Input.GetKeyDown(ActivationKey)) {
                 OnPartActivated();
@@ -35,9 +38,7 @@ public class Connectable : ObjectBase {
             } else if (Input.GetKeyUp(ActivationKey)) {
                 OnPartDeactivated();
             }
-        }
-        else
-        {
+        } else {
             //If we are not connected treat the object as a base obj
             base.Update();
         }
@@ -57,18 +58,23 @@ public class Connectable : ObjectBase {
         OnShipConnected();
     }
 
-    public void DisconnectFromShip() {
-        //Need to remove assigned active key
-        OnShipDisconnected();
-    }
-
     protected virtual void OnShipConnected() { }
-    protected virtual void OnShipDisconnected() { }
     protected virtual void OnPartActivated() { }
     protected virtual void OnPartActivating() { }
     protected virtual void OnPartDeactivated() { }
 
     public void HandlePartDestroyed() {
         //Destroy object and invoke discconection from ship if the node no longer connects to base ship.
+        foreach (Connection connection in connections) {
+            if (connection.ConnectedPart) {
+                connection.ConnectedPart.damagable.StartCoroutine(ChainedPartDestroy(connection.ConnectedPart.damagable));
+            }
+        }
+        Destroy(gameObject);
+    }
+
+    private IEnumerator ChainedPartDestroy(Damagable damagable) {
+        yield return new WaitForSeconds(chainDestroyDelay);
+        damagable.TakeDamage(float.MaxValue);
     }
 }
