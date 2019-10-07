@@ -18,7 +18,12 @@ public class Connection : MonoBehaviour {
 
     private void HandleConnectPointConnected(ConnectPoint connectPt, Connectable connectable) {
         connectable.transform.SetParent(transform, true);
+        connectable.GetComponent<Damagable>().OnPartDestroyed.AddListener(HandleConnectedPartDestroyed);
         Ship.RegisterConnectable(connectable);
         ConnectedPart = connectable;
+    }
+
+    private void HandleConnectedPartDestroyed() {
+        GameObject.Destroy(gameObject);
     }
 }

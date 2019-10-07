@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Damagable))]
-public class ShipCore : ObjectBase
-{
-    public Transform LeftThrustPosition;
-    public Transform RightThrustPosition;
-
+public class ShipCore : ObjectBase {
     public float ThrustFactor = 5.0f;
+    public float TurnSpeed = 2f;
 
+    public int FactionId { get; set; }
+    public Rigidbody2D Rb2D => rb2D;
     public Action<Connectable> OnPartConnected = delegate { };
 
     private List<Connectable> connectedParts = new List<Connectable>();
@@ -18,9 +17,8 @@ public class ShipCore : ObjectBase
     private Rigidbody2D rb2D;
     private Damagable damagable;
     private Connection[] connections;
-
-    public int FactionId { get; set; }
-    public Rigidbody2D Rb2D => rb2D;
+    private Vector2 thrustInput;
+    private bool isBraking = false;
 
     private void Awake() {
         rb2D = GetComponent<Rigidbody2D>();
@@ -31,47 +29,29 @@ public class ShipCore : ObjectBase
         }
     }
 
-    protected void Start()
-    {
+    protected override void Start() {
         base.Start();
         rb2D.AddForceAtPosition(Vector2.one * 15f, Vector2.left);
     }
 
-    protected override void Update()
-    {
+    protected override void Update() {
         base.Update();
         CheckBaseThrusters();
     }
 
-    private void CheckBaseThrusters()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ThrustActive(LeftThrustPosition);
-            ThrustActivating(LeftThrustPosition);
-        }
-        if (Input.GetKey(KeyCode.Q))
-        {
-            ThrustActive(LeftThrustPosition);
-        }
-        else if (Input.GetKeyUp(KeyCode.Q))
-        {
-            ThrustDeactivated(LeftThrustPosition);
-        }
+    private void LateUpdate() {
+        rb2D.AddForce(transform.up * thrustInput.y * ThrustFactor);
+        rb2D.AddTorque(thrustInput.x * TurnSpeed);
+        rb2D.drag = isBraking ? 5f : 0.05f;
+        rb2D.angularDrag = isBraking ? 5f : 0.05f;
+    }
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ThrustActive(RightThrustPosition);
-            ThrustActivating(RightThrustPosition);
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            ThrustActive(RightThrustPosition);
-        }
-        else if (Input.GetKeyUp(KeyCode.E))
-        {
-            ThrustDeactivated(RightThrustPosition);
-        }
+    private void CheckBaseThrusters() {
+        thrustInput.y = Input.GetKey(KeyCode.W) ? 1f : 0;
+        thrustInput.x = 0;
+        thrustInput.x += Input.GetKey(KeyCode.A) ? 1f : 0;
+        thrustInput.x += Input.GetKey(KeyCode.D) ? -1f : 0;
+        isBraking = Input.GetKey(KeyCode.S);
     }
 
     public void RegisterConnectable(Connectable connectable) {
@@ -90,10 +70,8 @@ public class ShipCore : ObjectBase
 
     public static KeyCode[] GetAlphaKeyCodes() {
         return new KeyCode[] {
-            KeyCode.A,
             KeyCode.B,
             KeyCode.C,
-            KeyCode.D,
             KeyCode.E,
             KeyCode.F,
             KeyCode.G,
@@ -108,29 +86,24 @@ public class ShipCore : ObjectBase
             KeyCode.P,
             KeyCode.Q,
             KeyCode.R,
-            KeyCode.S,
             KeyCode.T,
             KeyCode.U,
             KeyCode.V,
-            KeyCode.W,
             KeyCode.X,
             KeyCode.Y,
             KeyCode.Z
         };
     }
 
-    private void ThrustActive(Transform thrustPosition)
-    {
+    private void ThrustActive(Transform thrustPosition) {
         this.Rb2D.AddForceAtPosition(transform.up * ThrustFactor, thrustPosition.position);
     }
 
-    private void ThrustActivating(Transform thrustPosition)
-    {
+    private void ThrustActivating(Transform thrustPosition) {
         //add thrust fire sprite
     }
 
-    private void ThrustDeactivated(Transform thrustPosition)
-    {
+    private void ThrustDeactivated(Transform thrustPosition) {
         // rm thrust fire sprite
     }
 }
